@@ -19,7 +19,7 @@ interface TodoItemsState {
 
 interface TodoItemsAction {
   type: "loadState" | "add" | "delete" | "toggleDone" | "drop";
-  data: any;
+  data: any
 }
 
 const TodoItemsContext = createContext<
@@ -88,6 +88,9 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
         todoItems: state.todoItems.filter(({ id }) => id !== action.data.id),
       };
     case "toggleDone":
+      window.addEventListener('storage', () => {
+        
+      })
       const itemIndex = state.todoItems.findIndex(
         ({ id }) => id === action.data.id
       );
@@ -116,3 +119,4 @@ function generateId() {
     Math.random() * 1e16
   ).toString(36)}`;
 }
+

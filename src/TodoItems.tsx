@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import { useCallback } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -25,12 +25,13 @@ const useTodoItemListStyles = makeStyles({
     listStyle: "none",
     padding: 0,
   },
+  listItem: {
+
+  }
 });
 
 export const TodoItemsList = function () {
   const { todoItems, dispatch } = useTodoItems();
-
-  const [isDragg, setIsDragg] = useState(true)
 
   const classes = useTodoItemListStyles();
 
@@ -47,31 +48,28 @@ export const TodoItemsList = function () {
   });
 
   const handleDragEnd = (result: any) => {
-    setIsDragg(true)
-    const buf1 = todoItems.find(
-      (item, index) => result.destination.index === index
-    );
-    const buf2 = todoItems.find((item, index) => result.source.index === index);
+    if (result.destination === result.source) {
+      return;
+    }
+    if (result.destination !== null) {
+      const toIndex: number = result.destination.index;
+      const fromIndex: number = result.source.index;
 
-    dispatch({
-      type: "drop",
-      data: {
-        items: todoItems.map((item, index) => {
-          if (item === buf1) {
-            return buf2;
-          }
-          if (item === buf2) {
-            return buf1;
-          }
-          return item;
-        }),
-      },
-    });
+      const arr = todoItems.filter((el, index) => index !== fromIndex);
+      arr.splice(toIndex, 0, todoItems[fromIndex]);
+
+      dispatch({
+        type: "drop",
+        data: {
+          items: arr,
+        },
+      });
+    }
   };
 
   // @ts-ignore
   return (
-    <DragDropContext onDragEnd={handleDragEnd} onDragStart={() => setIsDragg(false)}>
+    <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId={"drop1"}>
         {(provided) => (
           <ul
@@ -86,8 +84,9 @@ export const TodoItemsList = function () {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
+                    className={classes.listItem}
                   >
-                    <motion.div transition={spring} >
+                    <motion.div transition={spring}>
                       <TodoItemCard item={item} />
                     </motion.div>
                   </li>
