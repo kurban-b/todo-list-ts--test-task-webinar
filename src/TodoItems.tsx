@@ -1,20 +1,20 @@
-import { useCallback } from "react";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { makeStyles } from "@material-ui/core/styles";
-import classnames from "classnames";
-import { motion } from "framer-motion";
-import { TodoItem, useTodoItems } from "./TodoItemsContext";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useCallback } from 'react';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from '@material-ui/core/styles';
+import classnames from 'classnames';
+import { motion } from 'framer-motion';
+import { localStorageKey, TodoItem, useTodoItems } from './TodoItemsContext';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const spring = {
-  type: "spring",
+  type: 'spring',
   damping: 40,
   stiffness: 150,
   duration: 0.1,
@@ -22,12 +22,10 @@ const spring = {
 
 const useTodoItemListStyles = makeStyles({
   root: {
-    listStyle: "none",
+    listStyle: 'none',
     padding: 0,
   },
-  listItem: {
-
-  }
+  listItem: {},
 });
 
 export const TodoItemsList = function () {
@@ -59,7 +57,7 @@ export const TodoItemsList = function () {
       arr.splice(toIndex, 0, todoItems[fromIndex]);
 
       dispatch({
-        type: "drop",
+        type: 'drop',
         data: {
           items: arr,
         },
@@ -70,7 +68,7 @@ export const TodoItemsList = function () {
   // @ts-ignore
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId={"drop1"}>
+      <Droppable droppableId={'drop1'}>
         {(provided) => (
           <ul
             className={classes.root}
@@ -107,8 +105,8 @@ const useTodoItemCardStyles = makeStyles({
     marginBottom: 24,
   },
   doneRoot: {
-    textDecoration: "line-through",
-    color: "#888888",
+    textDecoration: 'line-through',
+    color: '#888888',
   },
 });
 
@@ -117,17 +115,17 @@ export const TodoItemCard = function ({ item }: { item: TodoItem }) {
   const { dispatch } = useTodoItems();
 
   const handleDelete = useCallback(
-    () => dispatch({ type: "delete", data: { id: item.id } }),
-    [item.id, dispatch]
+    () => dispatch({ type: 'delete', data: { id: item.id } }),
+    [item.id, dispatch],
   );
 
   const handleToggleDone = useCallback(
     () =>
       dispatch({
-        type: "toggleDone",
+        type: 'toggleDone',
         data: { id: item.id },
       }),
-    [item.id, dispatch]
+    [item.id, dispatch],
   );
 
   return (

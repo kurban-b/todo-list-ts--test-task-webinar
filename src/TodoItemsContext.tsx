@@ -4,7 +4,7 @@ import {
   useContext,
   useEffect,
   useReducer,
-} from "react";
+} from 'react';
 
 export interface TodoItem {
   id: string;
@@ -18,8 +18,8 @@ interface TodoItemsState {
 }
 
 interface TodoItemsAction {
-  type: "loadState" | "add" | "delete" | "toggleDone" | "drop";
-  data: any
+  type: 'loadState' | 'add' | 'delete' | 'toggleDone' | 'drop' | 'updateState';
+  data: any;
 }
 
 const TodoItemsContext = createContext<
@@ -27,7 +27,7 @@ const TodoItemsContext = createContext<
 >(null);
 
 const defaultState = { todoItems: [] };
-const localStorageKey = "todoListState";
+export const localStorageKey = 'todoListState';
 
 export const TodoItemsContextProvider = ({
   children,
@@ -41,14 +41,27 @@ export const TodoItemsContextProvider = ({
 
     if (savedState) {
       try {
-        dispatch({ type: "loadState", data: JSON.parse(savedState) });
+        dispatch({ type: 'loadState', data: JSON.parse(savedState) });
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(localStorageKey, JSON.stringify(state));
+    try {
+      localStorage.setItem(localStorageKey, JSON.stringify(state));
+    } catch (e) {
+      if (e == 'QUOTA_EXCEEDED_ERR') {
+        alert('Превышен лимит локального хранилища');
+      }
+    }
   }, [state]);
+
+  // window.addEventListener('storage', () => {
+  //   const storageState = localStorage.getItem(localStorageKey)
+  //   if (storageState) {
+  //     dispatch({type: "updateState", data: JSON.parse(storageState)})
+  //   }
+  // })
 
   return (
     <TodoItemsContext.Provider value={{ ...state, dispatch }}>
@@ -62,7 +75,7 @@ export const useTodoItems = () => {
 
   if (!todoItemsContext) {
     throw new Error(
-      "useTodoItems hook should only be used inside TodoItemsContextProvider"
+      'useTodoItems hook should only be used inside TodoItemsContextProvider',
     );
   }
 
@@ -71,10 +84,13 @@ export const useTodoItems = () => {
 
 function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
   switch (action.type) {
-    case "loadState": {
+    case 'loadState': {
       return action.data;
     }
-    case "add":
+    case 'updateState':
+      return action.data;
+
+    case 'add':
       return {
         ...state,
         todoItems: [
@@ -82,17 +98,14 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
           ...state.todoItems,
         ],
       };
-    case "delete":
+    case 'delete':
       return {
         ...state,
         todoItems: state.todoItems.filter(({ id }) => id !== action.data.id),
       };
-    case "toggleDone":
-      window.addEventListener('storage', () => {
-        
-      })
+    case 'toggleDone':
       const itemIndex = state.todoItems.findIndex(
-        ({ id }) => id === action.data.id
+        ({ id }) => id === action.data.id,
       );
       const item = state.todoItems[itemIndex];
 
@@ -104,7 +117,7 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
           ...state.todoItems.slice(itemIndex + 1),
         ],
       };
-    case "drop":
+    case 'drop':
       return {
         ...state,
         todoItems: action.data.items,
@@ -116,7 +129,6 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
 
 function generateId() {
   return `${Date.now().toString(36)}-${Math.floor(
-    Math.random() * 1e16
+    Math.random() * 1e16,
   ).toString(36)}`;
 }
-
