@@ -11,6 +11,7 @@ export interface TodoItem {
   title: string;
   details?: string;
   done: boolean;
+  date: string;
 }
 
 interface TodoItemsState {
@@ -97,7 +98,12 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
       return {
         ...state,
         todoItems: [
-          { id: generateId(), done: false, ...action.data.todoItem },
+          {
+            id: generateId(),
+            done: false,
+            date: new Date(),
+            ...action.data.todoItem,
+          },
           ...state.todoItems,
         ],
       };

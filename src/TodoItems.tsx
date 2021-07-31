@@ -12,6 +12,8 @@ import classnames from 'classnames';
 import { motion } from 'framer-motion';
 import { TodoItem, useTodoItems } from './TodoItemsContext';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import moment from 'moment';
+import 'moment/locale/ru';
 
 const spring = {
   type: 'spring',
@@ -113,6 +115,9 @@ const useTodoItemCardStyles = makeStyles({
     textDecoration: 'line-through',
     color: '#888888',
   },
+  date: {
+    color: '#888888',
+  },
 });
 
 export const TodoItemCard = function ({ item }: { item: TodoItem }) {
@@ -159,13 +164,16 @@ export const TodoItemCard = function ({ item }: { item: TodoItem }) {
           />
         }
       />
-      {item.details ? (
-        <CardContent>
+      <CardContent>
+        {item.details ? (
           <Typography variant="body2" component="p">
             {item.details}
           </Typography>
-        </CardContent>
-      ) : null}
+        ) : null}
+        <Typography variant="subtitle2" component="p" className={classes.date}>
+          {moment(item.date).locale('ru').format('LLL')}
+        </Typography>
+      </CardContent>
     </Card>
   );
 };
