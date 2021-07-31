@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -10,7 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
 import { motion } from 'framer-motion';
-import { localStorageKey, TodoItem, useTodoItems } from './TodoItemsContext';
+import { TodoItem, useTodoItems } from './TodoItemsContext';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const spring = {
@@ -30,6 +30,7 @@ const useTodoItemListStyles = makeStyles({
 
 export const TodoItemsList = function () {
   const { todoItems, dispatch } = useTodoItems();
+  const [dragging, setDragging] = useState(true);
 
   const classes = useTodoItemListStyles();
 
@@ -46,6 +47,7 @@ export const TodoItemsList = function () {
   });
 
   const handleDragEnd = (result: any) => {
+    setDragging(true);
     if (result.destination === result.source) {
       return;
     }
@@ -67,7 +69,10 @@ export const TodoItemsList = function () {
 
   // @ts-ignore
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
+    <DragDropContext
+      onDragEnd={handleDragEnd}
+      onDragStart={() => setDragging(false)}
+    >
       <Droppable droppableId={'drop1'}>
         {(provided) => (
           <ul
@@ -84,7 +89,7 @@ export const TodoItemsList = function () {
                     ref={provided.innerRef}
                     className={classes.listItem}
                   >
-                    <motion.div transition={spring}>
+                    <motion.div transition={spring} layout={dragging}>
                       <TodoItemCard item={item} />
                     </motion.div>
                   </li>

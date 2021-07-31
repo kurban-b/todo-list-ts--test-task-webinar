@@ -1,12 +1,16 @@
-import { useTodoItems } from "./TodoItemsContext";
-import { useForm, Controller } from "react-hook-form";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
+import { useTodoItems } from './TodoItemsContext';
+import { useForm, Controller } from 'react-hook-form';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 const useInputStyles = makeStyles(() => ({
   root: {
     marginBottom: 24,
+  },
+  btnStrg: {
+    marginLeft: '270px',
   },
 }));
 
@@ -18,8 +22,8 @@ export default function TodoItemForm() {
   return (
     <form
       onSubmit={handleSubmit((formData) => {
-        dispatch({ type: "add", data: { todoItem: formData } });
-        reset({ title: "", details: "" });
+        dispatch({ type: 'add', data: { todoItem: formData } });
+        reset({ title: '', details: '' });
       })}
     >
       <Controller
@@ -54,7 +58,7 @@ export default function TodoItemForm() {
         variant="contained"
         color="primary"
         type="submit"
-        disabled={!watch("title")}
+        disabled={!watch('title')}
       >
         Add
       </Button>

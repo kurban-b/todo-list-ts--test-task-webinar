@@ -50,18 +50,21 @@ export const TodoItemsContextProvider = ({
     try {
       localStorage.setItem(localStorageKey, JSON.stringify(state));
     } catch (e) {
-      if (e == 'QUOTA_EXCEEDED_ERR') {
+      if (e === 'QUOTA_EXCEEDED_ERR') {
         alert('Превышен лимит локального хранилища');
       }
     }
   }, [state]);
 
-  // window.addEventListener('storage', () => {
-  //   const storageState = localStorage.getItem(localStorageKey)
-  //   if (storageState) {
-  //     dispatch({type: "updateState", data: JSON.parse(storageState)})
-  //   }
-  // })
+  useEffect(() => {
+    window.addEventListener('storage', () => {
+      console.log('сработал');
+      const storageState = localStorage.getItem(localStorageKey);
+      if (storageState) {
+        dispatch({ type: 'updateState', data: JSON.parse(storageState) });
+      }
+    });
+  }, []);
 
   return (
     <TodoItemsContext.Provider value={{ ...state, dispatch }}>
